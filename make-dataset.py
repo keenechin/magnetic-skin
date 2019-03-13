@@ -33,7 +33,7 @@ for name in filenames:
         datum = datum.replace("[","")
         datum = datum.replace("]","")
         datum = datum.replace("\n","")
-        datum = datum.split(", ")
+        datum = [float(field) for field in datum.split(", ")]
         testnum = datum[0]
         datum[0] = int(datum[0]) + test_num_offset
 
@@ -46,10 +46,18 @@ for name in filenames:
     for test in tests:
         frame = pd.DataFrame.from_records(test,columns=labels)
         frames.append(frame)
-    test_num_offset = int(testnum)
+    test_num_offset = testnum
 
 dataset = pd.concat(frames)
+
+tests = np.unique(dataset['test_num']).astype(int)
+
+y = np.zeros(len(tests))
+for num in tests:
+    y[num] = int(dataset[dataset['test_num']==num]['location'].iloc[0])
+
 #%% save dataset
+np.save('../data/y.npy',y)
 np.save('../data/dataset.npy',np.array(dataset))
 
 
