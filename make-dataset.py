@@ -21,10 +21,11 @@ filenames = getFilenames()
 #%% Line by line get dataset
 frames = []
 labels = ['test_num', 'location', 'x', 'y', 'z', 't', 'weight']
-
+test_num_offset = 0
 for name in filenames:
     file = open(name,'r')
     data = file.readlines()
+    data = data[3:]
     test = []
     lastnum = 0
     tests = []
@@ -34,6 +35,7 @@ for name in filenames:
         datum = datum.replace("\n","")
         datum = datum.split(", ")
         testnum = datum[0]
+        datum[0] = int(datum[0]) + test_num_offset
 
         if testnum != lastnum:
             tests.append(test)
@@ -41,39 +43,13 @@ for name in filenames:
             lastnum = testnum
         test.append(tuple(datum))
     tests.append(test)
-    tests = np.array(tests[3:])
     for test in tests:
         frame = pd.DataFrame.from_records(test,columns=labels)
         frames.append(frame)
+    test_num_offset = int(testnum)
 
 dataset = pd.concat(frames)
-dataset.to_pickle('../data/all_data.pkl')
+#%% save dataset
+np.save('../data/dataset.npy',np.array(dataset))
 
 
-if False:
-    #%% Get dataset
-    frames = []
-    for name in filenames:
-        file = open(name,'r')
-        datastring = file.read()
-        datastring = datastring.replace("[","")
-        datastring = datastring.replace("]","")
-        print(datastring)
-        frame = pd.read_csv(StringIO(datastring))
-        print(frame.shape)
-        frames.append(frame)
-    dataset = np.array(pd.concat(frames))
-
-
-    #%% Get dataset
-    frames = []
-    for name in filenames:
-        frame = pd.read_csv(name,sep=",",engine='python')
-        array = np.array(frame)
-        frames.append(pd.DataFrame(array))
-
-
-    dataset = np.array(pd.concat(frames))
-
-
-#%%
