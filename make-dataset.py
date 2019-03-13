@@ -49,12 +49,13 @@ for name in filenames:
     test_num_offset = testnum
 
 dataset = pd.concat(frames)
+dataset.test_num = dataset.test_num.astype(int)
 
-tests = np.unique(dataset['test_num']).astype(int)
-
+tests = np.unique(dataset['test_num'])
 y = np.zeros(len(tests))
 for num in tests:
-    y[num] = int(dataset[dataset['test_num']==num]['location'].iloc[0])
+    y[num] = dataset[dataset['test_num']==num]['location'].iloc[0]
+
 
 #%% save dataset
 np.save('../data/y.npy',y)
