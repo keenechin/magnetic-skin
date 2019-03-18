@@ -6,6 +6,7 @@ from sklearn.model_selection import ShuffleSplit
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 #%% Load Data
 X = pd.read_pickle('../data/features.pkl')
@@ -22,7 +23,6 @@ for tr,tst in rs.split(X):
 #%% Eval function
 def evalModel(model,train_x,train_y,test_x,test_y):
     y_hat = model.predict(test_x)
-    print('Predicted classes: {0}'.format(np.unique(y_hat)))
     print('Training score: {0}'.format(model.score(train_x,train_y)))
     print('Test score: {0}'.format(model.score(test_x,test_y)))
     plt.matshow(confusion_matrix(test_y,y_hat))
@@ -35,6 +35,6 @@ knn.fit(train_x,train_y)
 evalModel(knn,train_x,train_y,test_x,test_y)
 
 #%% MLP
-mlp = MLPClassifier(solver = 'adam', hidden_layer_sizes=(38,38),max_iter=int(1e4),random_state=8)
+mlp = MLPClassifier(hidden_layer_sizes=(38),max_iter=int(1e4),random_state=8)
 mlp.fit(train_x,train_y)
 evalModel(mlp,train_x,train_y,test_x,test_y)

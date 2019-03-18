@@ -9,7 +9,7 @@ else:
     from io import StringIO
 
 #%% Get filenames
-def getFilenames(dirname = "../data"):
+def getFilenames(dirname = "../data/N48 UD DM S3/"):
     filenames = []
     for file in os.listdir(dirname):
         if file.endswith(".txt"):
@@ -23,6 +23,7 @@ frames = []
 labels = ['test_num', 'location', 'x', 'y', 'z', 't', 'weight']
 test_num_offset = 0
 for name in filenames:
+    print(name)
     file = open(name,'r')
     data = file.readlines()
     data = data[3:]
@@ -33,7 +34,7 @@ for name in filenames:
         datum = datum.replace("[","")
         datum = datum.replace("]","")
         datum = datum.replace("\n","")
-        datum = [float(field) for field in datum.split(", ")]
+        datum = [field for field in datum.split(", ")]
         testnum = datum[0]
         datum[0] = int(datum[0]) + test_num_offset
 
@@ -46,7 +47,7 @@ for name in filenames:
     for test in tests:
         frame = pd.DataFrame.from_records(test,columns=labels)
         frames.append(frame)
-    test_num_offset = testnum
+    test_num_offset = int(testnum)
 
 dataset = pd.concat(frames)
 dataset.test_num = dataset.test_num.astype(int)

@@ -1,7 +1,7 @@
 #%% Imports
 import numpy as np
 import pandas as pd
-from tsfresh import extract_relevant_features
+from tsfresh import extract_relevant_features, extract_features
 from tsfresh.feature_extraction import MinimalFCParameters
 
 
@@ -19,5 +19,7 @@ def getTest(dataset,num):
 
 #%% Extract relevant features
 
-features =  extract_relevant_features(dataset, y, column_id='test_num', column_sort='t', default_fc_parameters=MinimalFCParameters())
+#features =  extract_relevant_features(dataset, y, column_id='test_num', column_sort='t', default_fc_parameters=MinimalFCParameters(),n_jobs=0)
+features = extract_features(dataset,default_fc_parameters=MinimalFCParameters())
+#%%
 features.to_pickle('../data/features.pkl')
